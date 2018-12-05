@@ -13,7 +13,7 @@ public class XkcdDbContract {
 
         public static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
                 " ( " +
-                COLUMN_NAME_COMIC_ID + " TEXT, " +
+                COLUMN_NAME_COMIC_ID + " INTEGER, " +
                 COLUMN_NAME_TIMESTAMP + " INTEGER, " +
                 COLUMN_NAME_FAVORITE + " INTEGER);";
 

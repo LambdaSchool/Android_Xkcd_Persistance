@@ -1,14 +1,18 @@
 package com.example.jacob.android_networkbasics;
 
 public class XkcdDbInfo {
-    private String timestamp;
-    private int favorite;
+    private int timestamp, favorite;
 
-    public String getTimestamp() {
+    public XkcdDbInfo(int timestamp, int favorite) {
+        this.timestamp = timestamp;
+        this.favorite = favorite;
+    }
+
+    public int getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(int timestamp) {
         this.timestamp = timestamp;
     }
 
