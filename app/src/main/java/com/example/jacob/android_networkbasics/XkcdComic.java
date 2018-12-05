@@ -18,6 +18,7 @@ public class XkcdComic {
     private String year;
     private String day;
     private Bitmap bitmap;
+    private XkcdDbInfo xkcdDbInfo;
 
 
     public XkcdComic(JSONObject json) {
@@ -78,62 +79,69 @@ public class XkcdComic {
         }
     }
 
-        public String getTranscript () {
-            return transcript;
-        }
-
-        public String getTitle () {
-            return title;
-        }
-
-        public String getSafe_title () {
-            return safe_title;
-        }
-
-        public int getNum () {
-            return num;
-        }
-
-        public String getNews () {
-            return news;
-        }
-
-        public String getAlt () {
-            return alt;
-        }
-
-        public String getLink () {
-            return link;
-        }
-
-        public String getImg () {
-            return img;
-        }
-
-        public String getMonth () {
-            return month;
-        }
-
-        public String getYear () {
-            return year;
-        }
-
-        public String getDay () {
-            return day;
-        }
-
-        public Bitmap getBitmap () {
-            return bitmap;
-        }
-
-        public void setBitmap (Bitmap bitmap){
-            this.bitmap = bitmap;
-        }
-
-        @Override
-        public String toString () {
-            return "ClassPojo [transcript = " + transcript + ", title = " + title + ", safe_title = " + safe_title + ", num = " + num + ", news = " + news + ", alt = " + alt + ", link = " + link + ", img = " + img + ", month = " + month + ", year = " + year + ", day = " + day + "]";
-        }
-
-
+    public String getTranscript() {
+        return transcript;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getSafe_title() {
+        return safe_title;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public String getNews() {
+        return news;
+    }
+
+    public String getAlt() {
+        return alt;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    public XkcdDbInfo getXkcdDbInfo() {
+        return xkcdDbInfo;
+    }
+
+    public void setXkcdDbInfo(XkcdDbInfo xkcdDbInfo) {
+        this.xkcdDbInfo = xkcdDbInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "ClassPojo [transcript = " + transcript + ", title = " + title + ", safe_title = " + safe_title + ", num = " + num + ", news = " + news + ", alt = " + alt + ", link = " + link + ", img = " + img + ", month = " + month + ", year = " + year + ", day = " + day + "]";
+    }
+
+}
