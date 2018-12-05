@@ -22,4 +22,9 @@ public class XkcdDbHelper extends SQLiteOpenHelper {
         db.execSQL(XkcdDbContract.ComicEntry.SQL_DELETE_TABLE);
         this.onCreate(db);
     }
+
+    @Override
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        this.onUpgrade(db, oldVersion, newVersion);
+    }
 }

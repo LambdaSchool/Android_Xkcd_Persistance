@@ -9,6 +9,7 @@ public class XkcdComic {
     private String transcript, title, safe_title, news, alt, link, img, month, year, day;
     private int num;
     private Bitmap bitMap;
+    private XkcdDbInfo xkcdDbInfo;
 
     public XkcdComic(JSONObject json) {
         try {
@@ -66,6 +67,14 @@ public class XkcdComic {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public XkcdDbInfo getXkcdDbInfo() {
+        return xkcdDbInfo;
+    }
+
+    public void setXkcdDbInfo(XkcdDbInfo xkcdDbInfo) {
+        this.xkcdDbInfo = xkcdDbInfo;
     }
 
     public void setImg(String img) {

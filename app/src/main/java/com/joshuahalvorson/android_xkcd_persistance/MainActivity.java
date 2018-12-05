@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         comicAlt = findViewById(R.id.comic_alt);
         comicImage = findViewById(R.id.comic_image);
 
+
+
         findViewById(R.id.previous_comic).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,6 +107,13 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         })).start();
+
+        XkcdDbDao.initializeInstance(this);
+        XkcdDbDao.createComic(recentXkcdComic);
+        XkcdDbInfo readComic = XkcdDbDao.readComic(1);
+        XkcdDbDao.updateComic(new XkcdDbInfo(1, 0));
+        XkcdDbDao.deleteComic(1);
+        readComic = XkcdDbDao.readComic(1);
     }
 
     private void updateUI(XkcdComic xkcdComic){
