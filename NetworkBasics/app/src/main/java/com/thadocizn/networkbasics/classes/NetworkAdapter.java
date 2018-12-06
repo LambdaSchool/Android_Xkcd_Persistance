@@ -1,4 +1,4 @@
-package com.thadocizn.networkbasics;
+package com.thadocizn.networkbasics.classes;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

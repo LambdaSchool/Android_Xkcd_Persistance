@@ -1,13 +1,13 @@
-package com.thadocizn.networkbasics;
+package com.thadocizn.networkbasics.data;
 
-import android.app.Notification;
 import android.graphics.Bitmap;
-import android.util.Log;
+
+import com.thadocizn.networkbasics.classes.NetworkAdapter;
+import com.thadocizn.networkbasics.classes.XkcdComic;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 public class XkcdDao {
     private final static String BASE_URL = "https://xkcd.com/";
     private final static String URL_ENDING = "info.0.json";
