@@ -22,6 +22,7 @@ public class ComicDbDao {
 
     public static void createComic(XkcdComic comic) {
         ContentValues contentValues = new ContentValues();
+
         if (db != null) {
             contentValues.put(Constants.COLUMN_NAME_TIMESTAMP, comic.getXkcdDbInfo().getTimestamp());
             contentValues.put(Constants.COLUMN_NAME_BOOL, comic.getXkcdDbInfo().getBool());
@@ -60,5 +61,22 @@ public class ComicDbDao {
             cursor.close();
         }
         return info;
+    }
+
+    public static void updateComic(XkcdDbInfo comicInfo){
+
+        String whereClause = String.format("%s = %s", Constants.COLUMN_NAME_TIMESTAMP);
+        String query  = String.format("SELECT * FROM %s WHERE %s",
+                Constants.TABLE_NAME, whereClause);
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.getCount() == 1){
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(Constants.COLUMN_NAME_TIMESTAMP, comicInfo.getTimestamp());
+            contentValues.put(Constants.COLUMN_NAME_BOOL, comicInfo.getBool());
+
+            int resultId = db.update(Constants.TABLE_NAME, contentValues, whereClause, null);
+        }
+
     }
 }
