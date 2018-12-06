@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 public class XkcdComic {
 
+    private  boolean favorite;
     private  String month;
     private  int num;
     private  String link;
@@ -26,6 +27,14 @@ public class XkcdComic {
 
     public XkcdDbInfo getXkcdDbInfo() {
         return xkcdDbInfo;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 
     public void setXkcdDbInfo(XkcdDbInfo xkcdDbInfo) {
