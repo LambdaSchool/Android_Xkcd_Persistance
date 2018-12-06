@@ -79,4 +79,12 @@ public class ComicDbDao {
         }
 
     }
+
+    public static void deleteComic(int id) {
+        if (db != null) {
+            @SuppressLint("DefaultLocale") String whereClause = String.format("%s = %d",
+                    XkcdDbContract.ComicEntry._ID, id);
+            int affectedRows = db.delete(Constants.TABLE_NAME, whereClause, null);
+        }
+    }
 }
