@@ -1,9 +1,9 @@
-package com.thadocizn.networkbasics.data;
+package com.thadocizn.networkbasics.Xkcd;
 
 import android.graphics.Bitmap;
 
 import com.thadocizn.networkbasics.classes.NetworkAdapter;
-import com.thadocizn.networkbasics.classes.XkcdComic;
+import com.thadocizn.networkbasics.Xkcd.XkcdComic;
 
 import org.json.JSONException;
 import org.json.JSONObject;

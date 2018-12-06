@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.thadocizn.networkbasics.classes.NetworkAdapter;
 import com.thadocizn.networkbasics.R;
-import com.thadocizn.networkbasics.classes.XkcdComic;
-import com.thadocizn.networkbasics.data.XkcdDao;
+import com.thadocizn.networkbasics.Xkcd.XkcdComic;
+import com.thadocizn.networkbasics.Xkcd.XkcdDao;
 
 
 public class MainActivity extends AppCompatActivity {

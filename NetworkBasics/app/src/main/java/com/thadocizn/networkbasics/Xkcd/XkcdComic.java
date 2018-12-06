@@ -1,6 +1,8 @@
-package com.thadocizn.networkbasics.classes;
+package com.thadocizn.networkbasics.Xkcd;
 
 import android.graphics.Bitmap;
+
+import com.thadocizn.networkbasics.data.XkcdDbInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,8 +21,16 @@ public class XkcdComic {
     private  String title;
     private  String day;
     private Bitmap image;
+    private XkcdDbInfo xkcdDbInfo;
 
 
+    public XkcdDbInfo getXkcdDbInfo() {
+        return xkcdDbInfo;
+    }
+
+    public void setXkcdDbInfo(XkcdDbInfo xkcdDbInfo) {
+        this.xkcdDbInfo = xkcdDbInfo;
+    }
 
     public String getMonth() {
         return month;
