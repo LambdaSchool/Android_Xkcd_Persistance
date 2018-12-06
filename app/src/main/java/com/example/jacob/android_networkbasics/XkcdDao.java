@@ -14,14 +14,12 @@ public class XkcdDao {
     public static XkcdComic currentComic;
 
 
-
     private static XkcdComic getComic(String urlString) {
         String url = NetworkAdapter.httpRequest(urlString);
         XkcdComic comic = null;
         try {
             JSONObject comicAsJson = new JSONObject(url);
             comic = new XkcdComic(comicAsJson);
-
 
             String imageUrl = null;
             imageUrl = comic.getImg();
@@ -38,6 +36,20 @@ public class XkcdDao {
             return comic;
         }
         currentComic = comic;
+        if (comic != null) {
+            XkcdDbInfo comicDbInfo = XkcdDbDao.readComic(comic.getNum());
+            if (comicDbInfo == null) {
+                comicDbInfo = new XkcdDbInfo(0, 0);
+                comicDbInfo.setTimestamp(Math.toIntExact(System.currentTimeMillis() / 1000));
+                comicDbInfo.setFavorite(0);
+                comic.setXkcdDbInfo(comicDbInfo);
+                XkcdDbDao.createComic(comic);
+            } else {
+                comicDbInfo.setTimestamp(Math.toIntExact(System.currentTimeMillis() / 1000));
+                comic.setXkcdDbInfo(comicDbInfo);
+                XkcdDbDao.updateComic(comic);
+            }
+        }
         return comic;
     }
 
@@ -72,11 +84,20 @@ public class XkcdDao {
         return comic;
     }
 
-    public static XkcdComic getRandomComic(){
+    public static XkcdComic getRandomComic() {
         XkcdComic comic = null;
-        String randomNumber = String.valueOf((Math.round(Math.random()*maxComicNumber + 1)));
+        String randomNumber = String.valueOf((Math.round(Math.random() * maxComicNumber + 1)));
         String url = SPECIFIC_COMIC.replace("%d/", randomNumber);
         comic = getComic(url);
         return comic;
+    }
+
+    public static void setFavorite(boolean favorite) {
+        if (favorite) {
+            currentComic.getXkcdDbInfo().setFavorite(1);
+        } else {
+            currentComic.getXkcdDbInfo().setFavorite(0);
+        }
+        XkcdDbDao.updateComic(currentComic);
     }
 }

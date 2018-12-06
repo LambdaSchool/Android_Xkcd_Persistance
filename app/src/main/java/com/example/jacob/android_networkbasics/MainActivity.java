@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String RANDOM = "Random";
 
     Context context;
+    FloatingActionButton fab;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -54,8 +55,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        fab = findViewById(R.id.fab);
         context = this;
+
+        XkcdDbDao.initializeInstance(context);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -63,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar topToolbar = (Toolbar) findViewById(R.id.toolbar_top);
         setSupportActionBar(topToolbar);
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,9 +75,11 @@ public class MainActivity extends AppCompatActivity {
                 if (currentBitmap == comparisonBitmap) {
                     fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(), android.R.drawable.btn_star_big_off, null));
                     message = "Favorite removed";
+                    XkcdDao.setFavorite(false);
                 } else {
                     fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(), android.R.drawable.btn_star_big_on, null));
                     message = "Favorite saved";
+                    XkcdDao.setFavorite(true);
                 }
 
                 Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
@@ -106,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
             if (comic != null) {
                 ((TextView) findViewById(R.id.text_title)).setText(comic.getTitle());
                 ((ImageView) findViewById(R.id.image_comic)).setImageBitmap(comic.getBitmap());
+
+                if (comic.getXkcdDbInfo().getFavorite() == 0) {
+                    fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(), android.R.drawable.btn_star_big_off, null));
+                } else {
+                    fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(), android.R.drawable.btn_star_big_on, null));
+                }
 
                 if (comic.getNum() == 1) {
                     BottomNavigationView navigation = findViewById(R.id.navigation);

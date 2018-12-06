@@ -15,7 +15,7 @@ public class XkcdDbDao {
         }
     }
 
-    public void createComic(XkcdComic xkcdComic) {
+    public static void createComic(XkcdComic xkcdComic) {
         if (db != null) {
             ContentValues values = new ContentValues();
             XkcdDbInfo info = xkcdComic.getXkcdDbInfo();
@@ -28,7 +28,7 @@ public class XkcdDbDao {
         }
     }
 
-    public XkcdDbInfo readComic(int id) {
+    public static XkcdDbInfo readComic(int id) {
 //        SELECT * FROM comics WHERE comic_id=200;
         if (db != null) {
             Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s = '%s'",
