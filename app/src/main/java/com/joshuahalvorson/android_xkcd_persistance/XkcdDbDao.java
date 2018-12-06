@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class XkcdDbDao {
     private static SQLiteDatabase db;
 
@@ -15,11 +18,31 @@ public class XkcdDbDao {
         }
     }
 
+    public static ArrayList<String> readFavorites(){
+        String getComic = String.format("SELECT * FROM %s WHERE %s=%d;",
+                XkcdDbContract.ComicEntry.TABLE_NAME, XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, 1);
+        Cursor cursor = db.rawQuery(getComic, null);
+        int index;
+        ArrayList<String> favoritesList = new ArrayList<>();
+        while(cursor.moveToNext()){
+            index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE);
+            int isFavorite = cursor.getInt(index);
+            index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_COMIC_ID);
+            int comicId = cursor.getInt(index);
+            if(isFavorite == 1){
+                favoritesList.add(Integer.toString(comicId));
+            }
+        }
+        cursor.close();
+        return favoritesList;
+    }
+
     public static void createComic(XkcdComic comic){
         if(db != null){
             ContentValues values = new ContentValues();
-            values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_LAST_READ, 1);
-            values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, 1);
+            values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_LAST_READ, comic.getXkcdDbInfo().getTimestamp());
+            values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, comic.getXkcdDbInfo().getFavorite());
+            values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_COMIC_ID, comic.getXkcdDbInfo().getComicId());
             db.insertOrThrow(XkcdDbContract.ComicEntry.TABLE_NAME, null, values);
         }
 
@@ -36,7 +59,9 @@ public class XkcdDbDao {
             long timestamp = cursor.getLong(index);
             index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE);
             int isFavorite = cursor.getInt(index);
-            xkcdDbInfo = new XkcdDbInfo(timestamp, isFavorite);
+            index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_COMIC_ID);
+            int comicId = cursor.getInt(index);
+            xkcdDbInfo = new XkcdDbInfo(timestamp, isFavorite, comicId);
         }else{
             xkcdDbInfo = null;
         }
@@ -44,23 +69,56 @@ public class XkcdDbDao {
         return xkcdDbInfo;
     }
 
-    public static void updateComic(XkcdDbInfo xkcdDbInfo){
+    public static void updateComic(XkcdComic xkcdComic){
         if (db != null) {
-            String whereClause = String.format("%s = %s",
-                    XkcdDbContract.ComicEntry.COLUMN_NAME_LAST_READ, xkcdDbInfo.getTimestamp());
-            Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s",
-                    XkcdDbContract.ComicEntry.TABLE_NAME,
-                    whereClause),
-                    null);
-            if(cursor.getCount() == 1){
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_LAST_READ,
-                        xkcdDbInfo.getTimestamp());
-                contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE,
-                        xkcdDbInfo.getFavorite());
-                final int affectedRows = db.update(XkcdDbContract.ComicEntry.TABLE_NAME,
-                        contentValues, whereClause, null);
+            if (db != null) {
+                String whereClause = String.format("%s = '%s'",
+                        XkcdDbContract.ComicEntry.COLUMN_NAME_COMIC_ID,
+                        xkcdComic.getNum());
+
+                final Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s",
+                        XkcdDbContract.ComicEntry.TABLE_NAME,
+                        whereClause),
+                        null);
+
+                if(cursor.getCount() == 1) {
+                    ContentValues values = new ContentValues();
+                    values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, xkcdComic.getXkcdDbInfo().getFavorite());
+                    values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_LAST_READ, xkcdComic.getXkcdDbInfo().getTimestamp());
+
+                    final int affectedRows = db.update(XkcdDbContract.ComicEntry.TABLE_NAME, values, whereClause, null);
+                }
             }
+        }
+    }
+
+    public static ArrayList<XkcdDbInfo> readAllComics() {
+        if (db != null) {
+            Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s;",
+                    XkcdDbContract.ComicEntry.TABLE_NAME),
+                    null);
+
+            ArrayList<XkcdDbInfo> comicsList = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                int  index;
+                XkcdDbInfo xkcdDbInfo;
+                index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE);
+                int fav = cursor.getInt(index);
+
+                index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_COMIC_ID);
+                int cId = cursor.getInt(index);
+
+                index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_LAST_READ);
+                Long time = cursor.getLong(index);
+
+                xkcdDbInfo = new XkcdDbInfo(time, fav, cId);
+                comicsList.add(xkcdDbInfo);
+            }
+            cursor.close();
+            return comicsList;
+
+        } else {
+            return new ArrayList<>();
         }
     }
 

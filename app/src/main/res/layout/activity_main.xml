@@ -7,6 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/view_favorites_button"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:background="@drawable/ic_list_black_24dp" />
+
     <ImageView
         android:id="@+id/comic_image"
         android:layout_width="match_parent"
@@ -44,6 +51,16 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/favorite_button"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/ic_star_black_24dp"
+        android:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@id/linear_layout"
+        app:layout_constraintRight_toRightOf="parent" />
+
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
@@ -55,7 +72,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/navigation" />
+        app:menu="@menu/navigation" >
+
+    </android.support.design.widget.BottomNavigationView>
 
 
 </android.support.constraint.ConstraintLayout>

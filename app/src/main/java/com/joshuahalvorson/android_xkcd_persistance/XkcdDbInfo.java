@@ -2,11 +2,21 @@ package com.joshuahalvorson.android_xkcd_persistance;
 
 public class XkcdDbInfo {
     private long timestamp;
-    private int favorite;
+    private int favorite, comicId;
 
-    public XkcdDbInfo(long timestamp, int favorite) {
+
+    public XkcdDbInfo(long timestamp, int favorite, int comicId) {
         this.timestamp = timestamp;
         this.favorite = favorite;
+        this.comicId = comicId;
+    }
+
+    public int getComicId() {
+        return comicId;
+    }
+
+    public void setComicId(int comicId) {
+        this.comicId = comicId;
     }
 
     public long getTimestamp() {
