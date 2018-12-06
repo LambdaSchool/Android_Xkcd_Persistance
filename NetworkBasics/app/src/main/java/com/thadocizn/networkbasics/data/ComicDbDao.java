@@ -27,7 +27,7 @@ public class ComicDbDao {
             contentValues.put(Constants.COLUMN_NAME_TIMESTAMP, comic.getXkcdDbInfo().getTimestamp());
             contentValues.put(Constants.COLUMN_NAME_BOOL, comic.getXkcdDbInfo().getBool());
 
-            long resultId = db.insert(Constants.TABLE_NAME, null, contentValues);
+            long result = db.insert(Constants.TABLE_NAME, null, contentValues);
         }
     }
 
@@ -63,7 +63,7 @@ public class ComicDbDao {
         return info;
     }
 
-    public static void updateComic(XkcdDbInfo comicInfo){
+    public static void updateComic(XkcdComic comicInfo){
 
         String whereClause = String.format("%s = %s", Constants.COLUMN_NAME_TIMESTAMP);
         String query  = String.format("SELECT * FROM %s WHERE %s",
@@ -72,10 +72,10 @@ public class ComicDbDao {
 
         if (cursor.getCount() == 1){
             ContentValues contentValues = new ContentValues();
-            contentValues.put(Constants.COLUMN_NAME_TIMESTAMP, comicInfo.getTimestamp());
-            contentValues.put(Constants.COLUMN_NAME_BOOL, comicInfo.getBool());
+            contentValues.put(Constants.COLUMN_NAME_TIMESTAMP, comicInfo.getXkcdDbInfo().getTimestamp());
+            contentValues.put(Constants.COLUMN_NAME_BOOL, comicInfo.getXkcdDbInfo().getBool());
 
-            int resultId = db.update(Constants.TABLE_NAME, contentValues, whereClause, null);
+            int result = db.update(Constants.TABLE_NAME, contentValues, whereClause, null);
         }
 
     }
@@ -84,7 +84,7 @@ public class ComicDbDao {
         if (db != null) {
             @SuppressLint("DefaultLocale") String whereClause = String.format("%s = %d",
                     XkcdDbContract.ComicEntry._ID, id);
-            int affectedRows = db.delete(Constants.TABLE_NAME, whereClause, null);
+            int rows = db.delete(Constants.TABLE_NAME, whereClause, null);
         }
     }
 }

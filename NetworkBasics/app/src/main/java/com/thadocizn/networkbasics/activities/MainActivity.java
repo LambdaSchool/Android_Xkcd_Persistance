@@ -1,5 +1,6 @@
 package com.thadocizn.networkbasics.activities;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,10 +21,13 @@ public class MainActivity extends AppCompatActivity {
     XkcdComic comicTracker, preComic, nextComic, ranComic;
     TextView title;
     ImageView image;
+    Context context;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        context = this;
         previous = findViewById(R.id.btnPrevious);
         random = findViewById(R.id.btnRandom);
         next = findViewById(R.id.btnNext);
@@ -36,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                       preComic = XkcdDao.getPreviousComic(comicTracker);
+                       preComic = XkcdDao.getPreviousComic(comicTracker, context);
                        runOnUiThread(new Runnable() {
                            @Override
                            public void run() {
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                       ranComic = XkcdDao.getRandomComic();
+                       ranComic = XkcdDao.getRandomComic(context);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -75,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                     nextComic =   XkcdDao.getNextComic(comicTracker);
+                     nextComic =   XkcdDao.getNextComic(comicTracker, context);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -93,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 NetworkAdapter.httpRequest(HTTP_REQUEST);
-                comicTracker = XkcdDao.getRecentComic();
+                comicTracker = XkcdDao.getRecentComic(context);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
