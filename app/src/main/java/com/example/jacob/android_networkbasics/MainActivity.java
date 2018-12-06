@@ -1,12 +1,19 @@
 package com.example.jacob.android_networkbasics;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String NEXT = "Next";
     public static final String PREVIOUS = "Previous";
     public static final String RANDOM = "Random";
+
+    Context context;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -46,11 +55,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        context = this;
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         Toolbar topToolbar = (Toolbar) findViewById(R.id.toolbar_top);
         setSupportActionBar(topToolbar);
+
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String message;
+                Bitmap currentBitmap = ((BitmapDrawable) fab.getDrawable()).getBitmap();
+                Bitmap comparisonBitmap = ((BitmapDrawable) ResourcesCompat.getDrawable(getResources(), android.R.drawable.btn_star_big_on, null)).getBitmap();
+                if (currentBitmap == comparisonBitmap) {
+                    fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(), android.R.drawable.btn_star_big_off, null));
+                    message = "Favorite removed";
+                } else {
+                    fab.setImageDrawable(ResourcesCompat.getDrawable(getResources(), android.R.drawable.btn_star_big_on, null));
+                    message = "Favorite saved";
+                }
+
+                Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+
+
+            }
+        });
+
 
         new offloadTask().execute(RECENT);
 

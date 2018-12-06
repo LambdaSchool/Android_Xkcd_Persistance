@@ -15,7 +15,22 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:menu="@menu/top_menu"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        app:layout_anchor="@id/toolbar_top"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_constraintEnd_toEndOf="@+id/toolbar_top"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/btn_star_big_off" />
 
 
     <TextView

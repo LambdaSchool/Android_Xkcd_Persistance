@@ -58,18 +58,18 @@ public class XkcdDbDao {
         }
     }
 
-    public static void updateComic(XkcdDbInfo info) {
+    public static void updateComic(XkcdComic xkcdComic) {
         if (db != null) {
-            String whereClause = null;
-//            String whereClause = String.format("%s = %s", XkcdDbContract.ComicEntry._ID, info.getId());
+//            String whereClause = null;
+            String whereClause = String.format("%s = %s", XkcdDbContract.ComicEntry._ID, xkcdComic.getNum());
             final Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s",
                     XkcdDbContract.ComicEntry.TABLE_NAME,
                     whereClause),
                     null);
             if (cursor.getCount() == 1) {
                 ContentValues values = new ContentValues();
-                values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP, info.getTimestamp());
-                values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, info.getFavorite());
+                values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP, xkcdComic.getXkcdDbInfo().getTimestamp());
+                values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, xkcdComic.getXkcdDbInfo().getFavorite());
 
                 db.update(XkcdDbContract.ComicEntry.TABLE_NAME, values, whereClause, null);
             }
