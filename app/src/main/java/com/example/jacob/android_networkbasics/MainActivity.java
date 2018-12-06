@@ -122,11 +122,11 @@ public class MainActivity extends AppCompatActivity {
                     navigation.getMenu().getItem(0).setEnabled(false);
                 } else if (comic.getNum() == XkcdDao.maxComicNumber) {
                     BottomNavigationView navigation = findViewById(R.id.navigation);
-                    navigation.getMenu().getItem(2).setEnabled(false);
+                    navigation.getMenu().getItem(1).setEnabled(false);
                 } else {
                     BottomNavigationView navigation = findViewById(R.id.navigation);
                     navigation.getMenu().getItem(0).setEnabled(true);
-                    navigation.getMenu().getItem(2).setEnabled(true);
+                    navigation.getMenu().getItem(1).setEnabled(true);
                 }
 
             }
