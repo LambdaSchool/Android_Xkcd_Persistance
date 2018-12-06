@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Xkcd_Persistance</string>
+    <string name="back">Back</string>
+    <string name="forward">Forward</string>
+    <string name="rand">Rand</string>
 </resources>

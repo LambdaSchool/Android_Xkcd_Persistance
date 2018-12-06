@@ -3,17 +3,18 @@
 
     <item
         android:id="@+id/button_back"
-
-
-        android:title="Back" />
+        android:icon="@android:drawable/ic_media_previous"
+        android:title="@string/back" />
 
     <item
         android:id="@+id/button_random"
 
-        android:title="Rand"/>
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/rand" />
     <item
         android:id="@+id/button_forward"
 
-        android:title="Forward" />
+        android:icon="@android:drawable/ic_media_next"
+        android:title="@string/forward" />
 
 </menu>
