@@ -60,9 +60,35 @@ public class XkcdDbDao {
 
     public static void updateComic(XkcdDbInfo info) {
         if (db != null) {
-//            String whereClause = String.format("%s = %s", XkcdDbContract.ComicEntry._ID, info.getId());
+            String whereClause = String.format("%s = %s", XkcdDbContract.ComicEntry._ID, info.getId());
+            final Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s",
+                    XkcdDbContract.ComicEntry.TABLE_NAME,
+                    whereClause),
+                    null);
+            if (cursor.getCount() == 1) {
+                ContentValues values = new ContentValues();
+                values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP, info.getTimestamp());
+                values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, info.getFavorite());
 
-
+                db.update(XkcdDbContract.ComicEntry.TABLE_NAME, values, whereClause, null);
+            }
         }
     }
+
+    public static void deleteComic(int id) {
+        if (db != null) {
+            String whereClause = String.format("%s = '%s'",
+                    XkcdDbContract.ComicEntry._ID,
+                    id);
+            final Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s",
+                    XkcdDbContract.ComicEntry.TABLE_NAME,
+                    whereClause),
+                    null);
+            if (cursor.getCount() == 1) {
+                db.delete(XkcdDbContract.ComicEntry.TABLE_NAME, whereClause, null);
+            }
+        }
+    }
+
+
 }
