@@ -67,4 +67,7 @@ public class XkcdDao {
         return getComic(url, context);
     }
 
+    public static void setFavorite(XkcdComic comicTracker) {
+        ComicDbDao.updateComic(comicTracker);
+    }
 }

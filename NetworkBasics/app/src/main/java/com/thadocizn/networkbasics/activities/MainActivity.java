@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,11 +15,13 @@ import com.thadocizn.networkbasics.classes.NetworkAdapter;
 import com.thadocizn.networkbasics.R;
 import com.thadocizn.networkbasics.Xkcd.XkcdComic;
 import com.thadocizn.networkbasics.Xkcd.XkcdDao;
+import com.thadocizn.networkbasics.data.XkcdDbInfo;
 
 
 public class MainActivity extends AppCompatActivity {
     private static final String HTTP_REQUEST = "https://xkcd.com/info.0.json";
     private Button previous, random, next;
+    CheckBox favorite;
     XkcdComic comicTracker, preComic, nextComic, ranComic;
     TextView title;
     ImageView image;
@@ -33,6 +37,17 @@ public class MainActivity extends AppCompatActivity {
         next = findViewById(R.id.btnNext);
         title = (TextView) findViewById(R.id.tvTitle);
         image = findViewById(R.id.ivComic);
+        favorite = findViewById(R.id.checkBox);
+        favorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                XkcdDbInfo info = comicTracker.getXkcdDbInfo();
+                if (isChecked){
+                    info.setBool(0);
+                    XkcdDao.setFavorite(comicTracker);
+                }
+            }
+        });
 
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
