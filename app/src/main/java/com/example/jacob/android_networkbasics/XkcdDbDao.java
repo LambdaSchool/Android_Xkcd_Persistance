@@ -19,7 +19,7 @@ public class XkcdDbDao {
         if (db != null) {
             ContentValues values = new ContentValues();
             XkcdDbInfo info = xkcdComic.getXkcdDbInfo();
-            values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_COMIC_ID, xkcdComic.getNum());
+            values.put(XkcdDbContract.ComicEntry._ID, xkcdComic.getNum());
             values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP, info.getTimestamp());
             values.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, info.getFavorite());
             //TODO Where is the timestamp supposed to be set using System.currentTimeMillis()
@@ -33,12 +33,20 @@ public class XkcdDbDao {
         if (db != null) {
             Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s = '%s'",
                     XkcdDbContract.ComicEntry.TABLE_NAME,
-                    XkcdDbContract.ComicEntry.COLUMN_NAME_COMIC_ID,
+                    XkcdDbContract.ComicEntry._ID,
                     id),
                     null);
             XkcdDbInfo xkcdDbInfo;
+            int index;
             if (cursor.moveToNext() && (cursor.getCount() == 1)) {
-                xkcdDbInfo = getXkcdDbInfoFromCursor(cursor);
+
+                index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP);
+                int timestamp = cursor.getInt(index);
+
+                index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE);
+                int favorite = cursor.getInt(index);
+
+                xkcdDbInfo = new XkcdDbInfo(timestamp, favorite);
             } else {
                 xkcdDbInfo = null;
             }
@@ -50,20 +58,11 @@ public class XkcdDbDao {
         }
     }
 
+    public static void updateComic(XkcdDbInfo info) {
+        if (db != null) {
+//            String whereClause = String.format("%s = %s", XkcdDbContract.ComicEntry._ID, info.getId());
 
-    private static XkcdDbInfo getXkcdDbInfoFromCursor(Cursor cursor) {
-        int  index;
-        XkcdDbInfo xkcdDbInfo;
-//        index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_COMIC_ID);
-//        int comicId = cursor.getInt(index);
 
-        index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP);
-        int timestamp = cursor.getInt(index);
-
-        index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE);
-        int favorite = cursor.getInt(index);
-
-        xkcdDbInfo = new XkcdDbInfo(timestamp, favorite);
-        return xkcdDbInfo;
+        }
     }
 }
