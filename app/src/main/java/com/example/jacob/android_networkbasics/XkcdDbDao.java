@@ -60,7 +60,8 @@ public class XkcdDbDao {
 
     public static void updateComic(XkcdDbInfo info) {
         if (db != null) {
-            String whereClause = String.format("%s = %s", XkcdDbContract.ComicEntry._ID, info.getId());
+            String whereClause = null;
+//            String whereClause = String.format("%s = %s", XkcdDbContract.ComicEntry._ID, info.getId());
             final Cursor cursor = db.rawQuery(String.format("SELECT * FROM %s WHERE %s",
                     XkcdDbContract.ComicEntry.TABLE_NAME,
                     whereClause),
