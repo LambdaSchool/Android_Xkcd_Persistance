@@ -102,7 +102,7 @@ public class XkcdDbDao {
             XkcdDbInfo xkcdDbInfo;
             int index;
             while (cursor.moveToNext()) {
-                index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP);
+                index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry._ID);
                 comicIds.add(cursor.getInt(index));
             }
             cursor.close();

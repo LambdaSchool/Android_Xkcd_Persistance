@@ -1,6 +1,7 @@
 package com.example.jacob.android_networkbasics;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String NEXT = "Next";
     public static final String PREVIOUS = "Previous";
     public static final String RANDOM = "Random";
+    public static final String SPECIFIC = "Specific";
+    public static final String COMIC_KEY = "comic_request_key";
 
     Context context;
     FloatingActionButton fab;
@@ -45,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
                     new offloadTask().execute(NEXT);
 //                    mTextMessage.setText(R.string.navigate_forward);
                     return true;
+                case R.id.button_favorites:
+                    Intent intent = new Intent(context, ViewFavoritesActivity.class);
+                    startActivity(intent);
             }
             return false;
         }
@@ -90,16 +96,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        new offloadTask().execute(RECENT);
-
-/*        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                UpdateUI(XkcdDao.getRecentComic());
-//               String result = NetworkAdapter.httpRequest("https://xkcd.com/info.0.json");
-//                Log.i(getLocalClassName(), result);
-            }
-        }).start();*/
+        int comicId = getIntent().getIntExtra(COMIC_KEY,-1);
+        if (comicId != -1) {
+         new offloadTask().execute(SPECIFIC, String.valueOf(comicId));
+        } else {
+            new offloadTask().execute(RECENT,null);
+        }
 
     }
 
@@ -143,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
                     return XkcdDao.getPreviousComic();
                 case RANDOM:
                     return XkcdDao.getRandomComic();
+                case SPECIFIC:
+                    return XkcdDao.getComic(Integer.parseInt(strings[1]));
             }
             return null;
         }

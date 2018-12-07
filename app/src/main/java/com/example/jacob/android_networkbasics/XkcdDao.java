@@ -14,7 +14,7 @@ public class XkcdDao {
     public static XkcdComic currentComic;
 
 
-    private static XkcdComic getComic(String urlString) {
+    public static XkcdComic getComic(String urlString) {
         String url = NetworkAdapter.httpRequest(urlString);
         XkcdComic comic = null;
         try {
@@ -50,6 +50,13 @@ public class XkcdDao {
                 XkcdDbDao.updateComic(comic);
             }
         }
+        return comic;
+    }
+
+    public static XkcdComic getComic(int id) {
+        XkcdComic comic = null;
+        String url = SPECIFIC_COMIC.replace("%d/", Integer.toString(id));
+        comic = getComic(url);
         return comic;
     }
 
