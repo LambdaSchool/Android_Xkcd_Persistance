@@ -12,10 +12,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class NetworkAdapter {
-    final static int TIMEOUT = 3000;
+class NetworkAdapter {
+    private final static int TIMEOUT = 3000;
 
-    public static String httpRequest(String urlString) {
+    static String httpRequest(String urlString) {
         String result = null;
         InputStream stream = null;
         HttpURLConnection connection = null;
@@ -39,7 +39,6 @@ public class NetworkAdapter {
                     }
                     result = builder.toString();
                 }
-
             } else {
                 throw new IOException("HTTP error code: " + responseCode);
             }
@@ -65,12 +64,12 @@ public class NetworkAdapter {
     }
 
 
-    public static Bitmap httpImageRequest(String urlString) {
+    static Bitmap httpImageRequest(String urlString) {
         Bitmap resultImage = null;
         InputStream stream = null;
         HttpURLConnection connection = null;
 
-        URL url = null;
+        URL url;
         try {
             url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
@@ -84,8 +83,6 @@ public class NetworkAdapter {
                     resultImage = BitmapFactory.decodeStream(stream);
                 }
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -101,5 +98,5 @@ public class NetworkAdapter {
             }
         }
         return resultImage;
-        }
     }
+}

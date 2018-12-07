@@ -5,16 +5,16 @@ import android.graphics.Bitmap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class XkcdDao {
+class XkcdDao {
     private final static String BASE_URL = "https://xkcd.com/";
     private final static String END_URL = "/info.0.json";
     private final static String RECENT_COMIC = BASE_URL + END_URL;
     private final static String SPECIFIC_COMIC = BASE_URL + "%d/" + END_URL;
-    public static int maxComicNumber;
-    public static XkcdComic currentComic;
+    static int maxComicNumber;
+    private static XkcdComic currentComic;
 
 
-    public static XkcdComic getComic(String urlString) {
+    static XkcdComic getComic(String urlString) {
         String url = NetworkAdapter.httpRequest(urlString);
         XkcdComic comic = null;
         try {
@@ -53,21 +53,21 @@ public class XkcdDao {
         return comic;
     }
 
-    public static XkcdComic getComic(int id) {
+    static XkcdComic getComic(int id) {
         XkcdComic comic = null;
         String url = SPECIFIC_COMIC.replace("%d/", Integer.toString(id));
         comic = getComic(url);
         return comic;
     }
 
-    public static XkcdComic getRecentComic() {
+    static XkcdComic getRecentComic() {
         XkcdComic comic = null;
         comic = getComic(RECENT_COMIC);
         maxComicNumber = comic.getNum();
         return comic;
     }
 
-    public static XkcdComic getNextComic() {
+    static XkcdComic getNextComic() {
         XkcdComic comic = null;
         int comicNum = -1;
         comicNum = currentComic.getNum();
@@ -79,7 +79,7 @@ public class XkcdDao {
         return comic;
     }
 
-    public static XkcdComic getPreviousComic() {
+    static XkcdComic getPreviousComic() {
         XkcdComic comic = null;
         int comicNum = -1;
         comicNum = currentComic.getNum();
@@ -91,7 +91,7 @@ public class XkcdDao {
         return comic;
     }
 
-    public static XkcdComic getRandomComic() {
+    static XkcdComic getRandomComic() {
         XkcdComic comic = null;
         String randomNumber = String.valueOf((Math.round(Math.random() * maxComicNumber + 1)));
         String url = SPECIFIC_COMIC.replace("%d/", randomNumber);
@@ -99,7 +99,7 @@ public class XkcdDao {
         return comic;
     }
 
-    public static void setFavorite(boolean favorite) {
+    static void setFavorite(boolean favorite) {
         if (favorite) {
             currentComic.getXkcdDbInfo().setFavorite(1);
         } else {

@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     Context context;
     FloatingActionButton fab;
-    ImageView swipeListener;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -99,10 +98,10 @@ public class MainActivity extends AppCompatActivity {
 
         XkcdDbDao.initializeInstance(context);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        Toolbar topToolbar = (Toolbar) findViewById(R.id.toolbar_top);
+        Toolbar topToolbar = findViewById(R.id.toolbar_top);
         setSupportActionBar(topToolbar);
 
         fab.setOnClickListener(new View.OnClickListener() {

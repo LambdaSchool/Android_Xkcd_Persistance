@@ -8,13 +8,13 @@ public class XkcdDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "ComicsDatabase.db";
 
-    public XkcdDbHelper(Context context) {
+    XkcdDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-       db.execSQL(XkcdDbContract.ComicEntry.SQL_CREATE_TABLE);
+        db.execSQL(XkcdDbContract.ComicEntry.SQL_CREATE_TABLE);
 
     }
 
