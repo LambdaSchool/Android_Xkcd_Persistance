@@ -1,134 +1,121 @@
-# Android_Xkcd_Persistance
+# Network Basics
 
 ## Introduction
 
-This app will add some persistence to the xkcd app to allow users to set certain comics as favorites and see their view history.
+This project will have you interface with the simple API of a web comic [xkcd.com](). You will build a complete app which allows a user to browse the current and previous comics on this site.
 
 ## Instructions
 
-### Part 1 - Database Schema
+### Part 1 - Setup
 
-First thing we need to do is design a schema for our database. What data do we want to store? We could store the entire comic. This has it's own advantages and disadvantages, it would improve load times, but also add a lot of local storage. For this project, we'll store a history of viewed comics, when they were viewed and allow the user to mark them as a favorite.
+1. add permission to manifest `<uses-permission android:name="android.permission.INTERNET" />`
+2. add `android:usesCleartextTraffic="true"` to application in manifest
+    allows HTTP traffic in addition to https in android 9+
 
-1. Our DB will be a single table which will hold 3 columns, an `integer` ID, an `integer` for the timestamp when the item was last read, and an `integer` which will serve as a bool replacement (1 for true and 0 for false)
+### Part 2 - Network Adapter
+#### Request for JSON Response
+1. Create a java class called `NetworkAdapter`
+2. Create a `static` method called `httpRequest`, this will accept a `String` url and a `String` request type.
+3. Create 3 data members in this method, a `String` for your result, an `InputStream`, and an `HttpUrlConnection`
+4. Network connections can result in a number of exceptions, create a try block for the rest of the method.
+5. *Inside the try block* Create and store a new `URL` object, passing in the url `String` parameter to the constructor.
+6. Call `url.openConnection()` and store is in your connection field.
+7. Create an `int` constant as a `class` data member for `TIMEOUT` and set the value to 3000.
+8. Call `setReadTimeout` and `setConnectTimeout` on your connection object, passing in your `TIMEOUT` field for both.
+9. Call `connect` on the connection object.
+10. Retreive and store the `int` response code by calling `getResponseCode` on your connection object.
+11. Check that value to make sure that it matches `HttpsURLConnection.HTTP_OK`.
+  * This response code tells us that the request was processed correctly
+12. If it doesn't match, throw a new `IOException` and pass it the error code.
+13. You'll now need to create a catch block to handle this exception and provide a value for result
+14. *Back in the try block after checking the result code* store the `InputStream` from the connection using `getInputStream`
+15. Check if the stream is null. If not, create a new `InputStreamReader` object using your `InputStream`
+16. Use that `InputStreamReader` object to construct a new `BufferedReader` object and store it as `reader`
+17. Create a new `StringBuilder` object
+18. Call `readLine` on your `reader` object and store the result
+19. Write a while loop that will loop until the read line isn't null. Inside the loop, add the line to your `StringBuilder` and then read the next line.
+20. Convert your `StringBuilder` to a `String` and store it in your result `String`
+21. After your catch blocks, create a finally block.
+22. In this block, check to see if the stream is null. If not, call `stream.close` 
+  * You'll need to wrap this in a try/catch block
+23. Afterward, if connection isn't null, call `disconnect` on it.
+24. Return your result `String`
+25. In your `MainActivity` write a line of code to call your `httpRequest` method using the url `https://xkcd.com/info.0.json` and log the result. Make sure you get a reasonable result.
+  * Remember, this code needs to be in a separate thread. Wrap that line in a new thread and start it.
+  * The quickest way is to use code like this
+      `(new Thread(new Runnable() {
+       ​     @Override
+       ​     public void run() {
+       ​         // log code here
+       ​     }
+        })).start();`
+#### Request for Image Response
+This app will display a web comic image. The previous method will retreive a JSON object which will give us the URL for the desired image along with other data about the image. Now that we have the data and the image URL, we need to get the image file itself. Surprisingly, this is easier than getting the JSON text
+1. Write a static method called `httpImageRequest` which accepts a `String` and returns a `Bitmap`
+2. Follow the steps for writing your standard httpRequest until checking the result code (through step 14)
+3. Instead of building a string response with a buffer, pass it to the static method `BitmapFactory.decodeStream` this will return to you a `Bitmap` object as a result
+4. Finish the method with steps 21 - 24 of the previous section and return the `Bitmap` image
 
-### Part 2 - Database Contract
+### Part 3 - Data Model
+1. Open postman and run a GET command with the url `https://xkcd.com/info.0.json`
+2. Examine the resulting JSON and build a POJO class called `XkcdComic` to store an image object with the attributes seen in this JSON
+3. Write a constructor for your class which accepts a JSONObject and pulls data for your object from it using the key values you've seen in postman
+  * Each of these actions should be wrapped in a try/catch statement so a single missing field doesn't negate all the data for that object
+> If a value in JSON is wrapped in quotes, it is a string
+> Retreiving a value from a JSONObject is similar to retreiving it from an intent, call `getString` on the JSONObject for whatever type you want to retreive and pass in the key value (the green text in postman) as a string
 
-The contract is where we define our schema in Android.
+4. Write getters for all these data members. Don't write setters.
+5. Add another data member of type `Bitmap` write a getter and a setter for this member
 
-1. Create a new Java class called `XkcdDbContract`. Inside of that class, create a static class called `ComicEntry` which will `implements` `BaseColumns`.
+### Part 4 - Data Access Object
+Now we'll write a class to wrap our generic network adapter to provide access to our specific API. The goal for a data access object is to encapsulate all the tasks that a developer could reasonably want to perform when interacting with the corredsponding database. In this case, we want the user to be able to perform 4 tasks:
+1. Get the most recent comic
+2. Get the next comic
+3. Get the previous comic
+4. Get a random comic
+We will write a method for each of these tasks, but first, we must write a method with all the shared code for those tasks
+1. Create a new java class called `XkcdDao`
+2. Create constant values for the api's base url (`https://xkcd.com/`), one for the url ending (`info.0.json`), one to get the most recent comic which is the previous two concatenated, and one for retreiving a specific comic which is generated by concatenating the base and the ending and putting an id in the middle, we can do this by placing `%d/` between the two other strings which will allow us to replace the value using `String.format`
+  * doing this allows you to have a SSOT for each url you'll be using.
+3. First, we'll write the shared method.
+4. Write a `private static` method called `getComic` which accepts a `String` url and returns a single `XkcdComic` object
+5. In this method, first call your `NetworkAdapter.httpRequest` method and pass it in the url parameter
+6. Wrap the returned value in a `JSONObject` constructor and store the result.
+7. Pass your JSONObject into the `XkcdComic` constructor
+  * you'll have to wrap your JSON interactions in a try/catch statement again. Be sure to have a return statement for every code path (you can return null for failures as long as you check for it in your calling method)
+8. Now that you have pulled the data for your comic, call your `httpImageRequest` method and pass it in for the comic's `img` attribute
+  * you'll see when looking at postman, that the `img` attribute is the url for the image resource
+9. Take the resulting `Bitmap` and pass it into your comic's `setImage` method
+Now that we have the method which does our heavy lifting, we can write our wrapper methods which the user has access to
+10. First, we'll write the `getRecentComic` method.
+11. This is also `static` but will be `public`.
+12. Call `getComic` and pass in your `RECENT_COMIC` constant value.
+13. return the result
+14. `getNextComic` and `getPreviousComic` will both accept an `XkcdComic` object.
+15. They will pull the `num` value (remember, `num` must be an int as shown in the JSON in postman) and either add one or remove one from it.
+16. Take the new value and stitch it into your `SPECIFIC_COMIC` constant value using `String.format`
+17. Pass the result into `getComic` and return whatever it gives you
+18. The last one is a bit more complicated, we need to generate a random comic id between the oldest and newest ids
+19. Add a `public static` data member to the class called `maxComicNumber`
+20. Go into your `getRecentComic` method. After getting the comic and before returning it. Store its `num` value in your new data member
+  > if you look experiment with the xkcd urls, you will find that there is no comic for id 0 and all the ids increment with each new comic, we'll need to know this for the next part
 
-> BaseColumns gives us a default _ID field which we can use and is used when wrapping your database with other classes
+21. We can generate a random number by calling the static method `Math.random()` this will return a value between 0.0 and 1.0. Think of this as a percent value. Multiply that number by your max and you now have a random number between 0 and your max! However, we don't want 0 so let's add 1 to the result
+  > Math.random() will not return 1.0 as a result and as such, multiplying by your maximum will never result in your max value, so we are safe adding 1 to the result. Now the most recent comic could possibly come up in a random search
 
-1. Create a constant data member for your table's name and one for each of the column names.
+22. Take your random number, put it into the URL, pass it to your `getComic` and return the result
 
-> We don't need a data member for ID as it is provided with the BaseColumns
+### Part 5 - Main Activity
+Now we'll build an activity to use the tools we just wrote
+1. Build a layout with 3 buttons and an imageview (I used a `BottomNavigationActivity` to get the look that I wanted and you are welcome to do so if you want to experiment with it)
+2. Add a textview for a title and any other information you with to diaplay (Xkcd alt text is usually fun to read and expands upon the comic)
+3. Write a method called `updateUI` which accepts a `XkcdComic` object and uses it's data to populate the user interface
+4. In order to prevent bugs, you'll want to disable your previous and next buttons when your are viewing the first and last comics respectively
+5. In your `onCreate` method, write a simple thread to call the `getRecentComic` method from your DAO class and update the UI with the result. Remember to only call your `updateUi` method from the ui thread
+6. If that works you know your backend is GTG.
+7. Add listeners to your previous, next, and random buttons to call their respective methods (in separate threads) and test them.
 
-1. In db-fiddle, write a CREATE TABLE query to build your comics table as defined in Part 1
-2. In your contract class, create a constant `String` called `SQL_CREATE_TABLE`. Copy the query from db-fiddle to this member
-3. Replace all column names in your create member with references to the data members.
-4. Create a constant data member called `SQL_DELETE_TABLE` this will delete the entire table
-
-> Use the `DROP TABLE IF EXISTS` query to delete your table, just put your table name at the end
-
-1. Be sure that your SQL queries all end in a semi colon.
-
-### Part 3 - Database Helper
-
-1. Create a new `XkcdDbHelper` class which `extends` `SQLiteOpenHelper`
-2. Add data members for DATABASE_VERSION and DATABASE_NAME
-3. Add a constructor to the class which accepts a `Context` and calls the super constructor passing in the context, db name, `null`, and db version.
-4. Override the `onCreate` method. Call `execSQL` on the `SQLiteDatabase` object which is passed into the method. Pass the `SQL_CREATE_TABLE` data member from your contract class to `execSQL`
-5. Override the `onUpgrade` method. Call `execSQL` on the passed database and pass in your `SQL_DELETE_TABLE` data member.
-
-### Part 4 - SQL Dao
-
-We will need to implement the CRUD(L) functions in a DAO class to facilitate database interactions and make them clearer to understand. After the CRUD functions are implemented using ids, we can add additional functions as necessary, like filtered read, broader updates, or joins as necessary.
-
-1. First, we need a method to get a singleton instance of the database.
-
-   > A singleton is an object which can only be instantiated once. We can do this by only having private constructors and creating a `getInstance` method which would normally return a reference to the object instance, however, in this case, it won't return anything and will just store the value in a static member so the name will be different
-
-2. Create a data member of type `SQLiteDatabase` 
-
-3. Write a method called `initializeInstance` which will create an instance of your `XkcdDbHelper` class, call `getWritableDatabase` on the object and then store that all in the `SQLiteDatabase` object. This is all done if the `SQLiteDatabase` object is `null`
-
-   > In all methods which need to access the database member, check to see if it null before accessing it.
-
-4. We now need an object to store our db results in as it will store things that aren't in the web api objects. Create a class called `XkcdDbInfo`
-
-5. In this class, add data members to match the ones in your db schema (the id already exists in the comic object so that isn't necessary)
-
-6. Add getters and setters
-
-7. In your `XkcdComic` object, add a data member of type `XkcdDbInfo`, as well as a getter and setter for it.
-
-8. Write a method called `createComic` which accepts a `XkcdComic` object.
-
-9. Create a `ContentValues` variable in this method and assign it using the empty constructor for that class.
-
-10. call the `put` method on that variable for each column in your database
-
-    > be sure to put the column name constant as the first parameter and the desired value from the comic object as the second parameter
-
-11. Once the values object is built, call `insert` on the database object and pass the name of the table, `null`, and the values object
-
-12. Write a method called `readComic`, this will accept an int id. It will return a `XkcdDbInfo` object.
-
-13. In db-fiddle, write a query to read a single entry from the table when provided with the id
-
-14. Take that query and copy it into a string value in your method.
-
-15. Replace the hard coded ID with the one provided in the method signature
-
-16. Call the `rawQuery` method on your database, pass it in your query string and a null value. Store the resulting cursor.
-
-17. If a call to `moveToNext` on that cursor returns true retrieve all the values from that cursor and stores them in a `XkcdDbInfo` object
-
-    > remember, there are two parts to retrieving each piece of data from a cursor, first you call `getInt` on it (or whatever type you want), then you must pass in the column index which is done by calling `getColumnIndexOrThrow` and passing in the column name
-
-18. Return the constructed `XkcdDbInfo`  object
-
-    > For added peace of mind call `getCount` on your cursor and make sure it returns 1 before getting the data
-
-19. Write a method called `updateComic` which accepts a `XkcdDbInfo` object.
-
-20. First we want to write a where clause and check it. Create two String variables, one for the where clause and one for the whole query.
-
-    > Write the where clause then write the rest of the query and tack the where clause onto the end of it
-
-21. Call `rawQuery` with the complete clause and store the result
-
-22. Check that the result affects the correct number of entries (in this case, 1) by checking the `getCount` method
-
-23. Build a `ContentValues` object like in the create method.
-
-24. Pass it into the database's `update` method, then pass in the table name, your values object, the where clause, then null
-
-25. Create a method called `deleteComic` which accepts an id
-
-26. Test your where clause like in the update method
-
-27. Write a DELETE query using your where clause.
-
-28. Call `execSQL` with your query.
-
-    > execSQL will execute an SQL query like rawSQL will, but will not return a result.
-    
-    > You can also use the delete method if so inclined.
-
-29. Test your methods by entering test data, reading it, updating it and then deleting it. There is no need to attach this to the GUI yet, just use the debugger or log for now.
-
-If you get to this point, you can continue or wait until tomorrow when I have these instructions complete.
-
-### Part 5 - Connect to Comic DAO
-
-
-
-### Part 6 - Allow for Favorite Selection
-
-### Part 7 - Build Favorites/History Page
-
-#### Challenge
-
-Improve the get random comic feature, by only retrieving unseen comics until they have all been viewed.
+## Challenge
+* Wrap your DAO in the MVVM architecture to allow the user to rotate their screen to better view the comic they are currently on
+* Change your simple threads to `AsyncTasks`
+* Add additional QOL (quality of life) features to your app like allowing the user to enter a comic id they want

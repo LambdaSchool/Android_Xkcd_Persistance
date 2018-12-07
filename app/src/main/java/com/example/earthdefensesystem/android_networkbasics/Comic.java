@@ -10,7 +10,7 @@ public class Comic
     private String transcript;
     private String title;
     private String safe_title;
-    private String num;
+    private int num;
     private String news;
     private String alt;
     private String link;
@@ -45,7 +45,7 @@ public class Comic
             e.printStackTrace();
         }
         try {
-            this.num = json.getString("num");
+            this.num = json.getInt("num");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -116,12 +116,12 @@ public class Comic
         this.safe_title = safe_title;
     }
 
-    public String getNum ()
+    public Integer getNum ()
     {
         return num;
     }
 
-    public void setNum (String num)
+    public void setNum (Integer num)
     {
         this.num = num;
     }
@@ -165,6 +165,8 @@ public class Comic
     {
         this.img = img;
     }
+
+
 
     public String getMonth ()
     {
