@@ -14,9 +14,11 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,8 +29,12 @@ public class MainActivity extends AppCompatActivity {
     public static final String SPECIFIC = "Specific";
     public static final String COMIC_KEY = "comic_request_key";
 
+    private float x1, x2;
+    static final int MIN_DISTANCE = 150;
+
     Context context;
     FloatingActionButton fab;
+    ImageView swipeListener;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -56,6 +62,33 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    //add swipe listener
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                float deltaX = x2 - x1;
+                if (Math.abs(deltaX) > MIN_DISTANCE) {
+                    // Left to Right swipe action
+                    if (x2 > x1) {
+                        new offloadTask().execute(PREVIOUS);
+                    }
+
+                    // Right to left swipe action
+                    else {
+                        new offloadTask().execute(NEXT);
+                    }
+                } else {
+                    // consider as something else - a screen tap for example
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +129,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        int comicId = getIntent().getIntExtra(COMIC_KEY,-1);
+        int comicId = getIntent().getIntExtra(COMIC_KEY, -1);
         if (comicId != -1) {
-         new offloadTask().execute(SPECIFIC, String.valueOf(comicId));
+            new offloadTask().execute(SPECIFIC, String.valueOf(comicId));
         } else {
-            new offloadTask().execute(RECENT,null);
+            new offloadTask().execute(RECENT, null);
         }
 
     }
