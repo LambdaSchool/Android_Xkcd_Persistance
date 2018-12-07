@@ -6,7 +6,7 @@ public class ComicDBContract {
     public static class ComicEntry implements BaseColumns{
         public static final String TABLE_NAME = "comics";
 
-        public static final String 
+        public static final String
 
     }
 }
