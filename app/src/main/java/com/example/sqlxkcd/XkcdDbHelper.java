@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 
 public class XkcdDbHelper extends SQLiteOpenHelper {
 	
@@ -24,7 +22,6 @@ public class XkcdDbHelper extends SQLiteOpenHelper {
 		this(context);
 	}
 	
-	@RequiresApi(api = Build.VERSION_CODES.P)
 	public XkcdDbHelper(Context context, String name, int version, SQLiteDatabase.OpenParams openParams) {
 		this(context);
 	}

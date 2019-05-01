@@ -2,9 +2,10 @@ package com.example.sqlxkcd;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
         new Thread(new Runnable() {
             public void run() {
-                XkcdDAO.getSpecificComic(343);
                List<XkcdComic> comics = dbDao.getAllComics();
             }
         }).start();
