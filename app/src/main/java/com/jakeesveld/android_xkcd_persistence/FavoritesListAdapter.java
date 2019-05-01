@@ -36,6 +36,8 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
             @Override
             public void onClick(View v) {
                 XkcdDbDAO.deleteComic(data.getInfo());
+                dataList.remove(data);
+                notifyDataSetChanged();
             }
         });
 
