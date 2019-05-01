@@ -115,24 +115,26 @@ public class MainActivity extends AppCompatActivity {
         buttonFavorite = findViewById(R.id.button_favorites);
         currentComicId = 100;
         context = this;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final Comic result = ComicDAO.getLatest();
+        if(getIntent().getExtras() == null) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final Comic result = ComicDAO.getLatest();
 
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        currentComicId = result.getId();
-                        currentComic = result;
-                        updateUI();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            currentComicId = result.getId();
+                            currentComic = result;
+                            updateUI();
 
-                    }
-                });
+                        }
+                    });
 
-            }
-        }).start();
+                }
+            }).start();
+        }
 
         checkBoxFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,10 +195,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Intent intent = getIntent();
-        if(intent != null){
-            currentComic = (Comic) intent.getSerializableExtra("Comic");
-            currentComicId = currentComic.getId();
-            updateUI();
+        if(intent.getExtras() != null){
+            currentComicId = intent.getIntExtra("Comic", 1);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final Comic recievedComic = ComicDAO.getComic(currentComicId);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            currentComic = recievedComic;
+                            updateUI();
+                        }
+                    });
+                }
+            }).start();
+
         }
     }
 }

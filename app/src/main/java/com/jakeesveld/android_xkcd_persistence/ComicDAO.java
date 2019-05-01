@@ -78,6 +78,27 @@ public class ComicDAO {
         return nextComic;
     }
 
+    public static Comic getComic(int id){
+        String result = NetworkAdapter.httpRequest(URL_PREFIX + id + "/" + URL_SUFFIX);
+        Comic comic;
+
+        try{
+            JSONObject json = new JSONObject(result);
+            comic = new Comic(json);
+            XkcdDbInfo info = XkcdDbDAO.readComic(comic.getId());
+            if(info != null){
+                comic.setInfo(info);
+            }else{
+                XkcdDbDAO.addComic(comic.getId());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            comic = null;
+        }
+
+        return comic;
+    }
+
     public static Comic getRandom() {
         double doubRandomId = Math.random() * getLatest().getId();
         int intRandomId = (int) doubRandomId;

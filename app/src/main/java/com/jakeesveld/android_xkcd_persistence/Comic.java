@@ -6,6 +6,8 @@ import android.media.Image;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 public class Comic {
     private String title;
     private Bitmap image;

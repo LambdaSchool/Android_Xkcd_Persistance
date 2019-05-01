@@ -22,14 +22,15 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.favorites_list_item, viewGroup, false);
+        View itemView = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.favorites_list_item, viewGroup, false);
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         final Comic data = dataList.get(i);
-        viewHolder.textNumber.setText(data.getId());
+        viewHolder.textNumber.setText(Integer.toString(data.getId()));
         viewHolder.textName.setText(data.getTitle());
         viewHolder.buttonRemove.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,7 +43,7 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoritesListAdap
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(viewHolder.parent.getContext(), MainActivity.class);
-                intent.putExtra("Comic", (Serializable) data);
+                intent.putExtra("Comic", data.getId());
                 viewHolder.parent.getContext().startActivity(intent);
             }
         });

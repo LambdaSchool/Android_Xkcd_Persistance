@@ -24,10 +24,11 @@ public class XkcdDbDAO {
         }
     }
 
-    public static ArrayList<XkcdDbInfo> readAllComics() {
+    public static ArrayList<XkcdDbInfo> readAllFavorites() {
         if (db != null) {
-            Cursor cursor = db.rawQuery("SELECT * FROM " + XkcdDbContract.ComicEntry.TABLE_NAME,
-                    new String[]{});
+            Cursor cursor = db.rawQuery("SELECT * FROM " + XkcdDbContract.ComicEntry.TABLE_NAME + " WHERE " +
+                            XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE + "=?",
+                    new String[]{"1"});
             ArrayList<XkcdDbInfo> favorites = new ArrayList<>();
             int index;
             while (cursor.moveToNext()) {
@@ -40,9 +41,10 @@ public class XkcdDbDAO {
                 index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry._ID);
                 int id = cursor.getInt(index);
 
-                cursor.close();
+
                 favorites.add(new XkcdDbInfo(favorite, timestamp, id));
             }
+            cursor.close();
             return favorites;
         } else {
             return new ArrayList<>();
