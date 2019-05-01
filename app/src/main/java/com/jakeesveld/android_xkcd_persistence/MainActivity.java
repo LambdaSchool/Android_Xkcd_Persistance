@@ -1,17 +1,15 @@
 package com.jakeesveld.android_xkcd_persistence;
 
-import android.content.ClipData;
-import android.graphics.Matrix;
-import android.graphics.Matrix.ScaleToFit;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.service.autofill.FillContext;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView navigation;
     CheckBox checkBoxFavorite;
     static Comic currentComic;
+    Button buttonFavorite;
+    Context context;
 
 
 
@@ -112,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
         textViewTitle = findViewById(R.id.text_view_title);
         imageViewComic = findViewById(R.id.image_view_comic);
         navigation = findViewById(R.id.navigation);
+        buttonFavorite = findViewById(R.id.button_favorites);
         currentComicId = 100;
+        context = this;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -148,6 +150,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        buttonFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, FavoritesActivity.class));
+            }
+        });
+
  /*       checkBoxFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -180,4 +189,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = getIntent();
+        if(intent != null){
+            currentComic = (Comic) intent.getSerializableExtra("Comic");
+            currentComicId = currentComic.getId();
+            updateUI();
+        }
+    }
 }
