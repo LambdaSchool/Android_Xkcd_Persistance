@@ -11,6 +11,7 @@ public class XkcdComic {
     private String link, news, safe_title, transcript,
             alt, img, title, month, year, day;
     private Bitmap image;
+    private XkcdDbInfo dbInfo;
 
     public XkcdComic(JSONObject jsonObject) {
         try {
@@ -120,6 +121,14 @@ public class XkcdComic {
 
     public void setImage(Bitmap image) {
         this.image = image;
+    }
+
+    public XkcdDbInfo getDbInfo() {
+        return dbInfo;
+    }
+
+    public void setDbInfo(XkcdDbInfo dbInfo) {
+        this.dbInfo = dbInfo;
     }
 }
 
