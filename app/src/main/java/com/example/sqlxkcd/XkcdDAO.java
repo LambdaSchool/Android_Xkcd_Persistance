@@ -8,8 +8,10 @@ public class XkcdDAO {
         public static final String RECENT_COMIC = BASE_URL + URL_END;
         public static final String SPECIFIC_COMIC = BASE_URL + "%d/" + URL_END;
 
-        public static XkcdComic getComic(String urlString){
-            String result = NetworkAdapter.httpRequest(BASE_URL);
+        public static void getSpecificComic(int num){
+            String result = NetworkAdapter.httpRequest(String.format(SPECIFIC_COMIC, num));
+            int id = 0;
+            String timeStamp = "";
 
             JSONObject comicObject;
             try{
@@ -18,7 +20,17 @@ public class XkcdDAO {
                 e.printStackTrace();
                 comicObject = null;
             }
-            XkcdComic comic = new XkcdComic(comicObject);
-            return comic;
+            try {
+                id = comicObject.getInt("num");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                timeStamp = comicObject.getString("year") + comicObject.getString("month");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            
+            SqlXkcdDao.addComic(new XkcdComic(id, timeStamp));
         }
 }
