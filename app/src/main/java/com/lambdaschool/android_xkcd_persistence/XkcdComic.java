@@ -18,6 +18,7 @@ public class XkcdComic {
     private String day;
     private String safe_title;
     private Bitmap bitmap;
+    private XkcdDbInfo xkcdDbInfo;
 
     public XkcdComic(JSONObject json) {
         try {
@@ -171,6 +172,14 @@ public class XkcdComic {
 
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
+    }
+
+    public XkcdDbInfo getXkcdDbInfo() {
+        return xkcdDbInfo;
+    }
+
+    public void setXkcdDbInfo(XkcdDbInfo xkcdDbInfo) {
+        this.xkcdDbInfo = xkcdDbInfo;
     }
 
     @Override

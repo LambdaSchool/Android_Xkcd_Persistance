@@ -8,7 +8,7 @@ This app will add some persistence to the xkcd app to allow users to set certain
 
 ### Part 1 - Database Schema
 
-First thing we need to do is design a schema for our database. What data do we want to store? We could store the entire comic. This has it's own advantages and disadvantages, it would improve load times, but also add a lot of local storage. For this project, we'll store a history of viewed comics, when they were viewed and allow the user to mark them as a favorite.
+First thing we need to do is design a schema for our database. What data do we want to store? We could store the entire comic. This has it's own advantages and disadvantages, it would improve load times, but also add a lot of local storage. For this project, we'll store a history of favorite comics, when they were favorite and allow the user to mark them as a favorite.
 
 1. Our DB will be a single table which will hold 3 columns, an `integer` ID, an `integer` for the timestamp when the item was last read, and an `integer` which will serve as a bool replacement (1 for true and 0 for false)
 
@@ -154,6 +154,6 @@ Finally, we'll add methods to each of our layers to support.
 
 #### Challenge
 
-Improve the get random comic feature, by only retrieving unseen comics until they have all been viewed.
+Improve the get random comic feature, by only retrieving unseen comics until they have all been favorite.
 
 Add a list of history to the favorites page
