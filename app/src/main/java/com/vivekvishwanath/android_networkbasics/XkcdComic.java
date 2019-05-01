@@ -11,7 +11,7 @@ public class XkcdComic {
     private String link, news, safe_title, transcript,
             alt, img, title, month, year, day;
     private Bitmap image;
-    private XkcdDbInfo dbInfo;
+    private XkcdDbInfo dbInfo = new XkcdDbInfo();
 
     public XkcdComic(JSONObject jsonObject) {
         try {

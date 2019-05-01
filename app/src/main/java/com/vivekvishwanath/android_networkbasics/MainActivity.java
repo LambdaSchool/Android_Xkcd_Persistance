@@ -1,5 +1,6 @@
 package com.vivekvishwanath.android_networkbasics;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationItemView;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationItemView nextButton;
     private BottomNavigationItemView previousButton;
     private XkcdComic comic;
+    Context context;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -77,6 +79,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                XkcdComic testComic = XkcdDao.getRecentComic();
+
+                XkcdDbDao.initializeInstance(context);
+
+                XkcdDbInfo comicInfo = XkcdDbDao.readComic(testComic.getNum());
+                int i = 0;
+
+            }
+        }).start();
 
         comicImage = findViewById(R.id.comic_image);
         comicText = findViewById(R.id.comic_text);

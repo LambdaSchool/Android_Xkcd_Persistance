@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class XkcdDbDao {
     private static SQLiteDatabase db;
 
-    public void initializeInstance(Context context) {
+    public static void initializeInstance(Context context) {
         XkcdDbHelper dbHelper = new XkcdDbHelper(context);
         db = dbHelper.getWritableDatabase();
     }
@@ -21,15 +21,16 @@ public class XkcdDbDao {
             contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP,
                     comic.getDbInfo().getTimestamp());
             contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE,
-                    comic.getDbInfo().isFavorite() ? 0 : 1);
+                    comic.getDbInfo().isFavorite() ? 1 : 0);
 
             db.insert(XkcdDbContract.ComicEntry.TABLE_NAME, null, contentValues);
         }
     }
 
     public static XkcdDbInfo readComic (int id) {
-        String entryQuery = String.format("SELECT * FROM comics WHERE id = %d", id);
-        XkcdDbInfo dbInfo = new XkcdDbInfo();
+        String entryQuery = String.format("SELECT * FROM %s WHERE %s = %s",
+                XkcdDbContract.ComicEntry.TABLE_NAME, XkcdDbContract.ComicEntry._ID ,id);
+        XkcdDbInfo dbInfo;
         int index;
         if (db != null) {
             Cursor cursor = db.rawQuery(entryQuery, null);
@@ -43,8 +44,10 @@ public class XkcdDbDao {
                 index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE);
                 int favorite = cursor.getInt(index);
 
-                dbInfo.setTimestamp(timestamp);
-                dbInfo.setFavorite(favorite == 1);
+                dbInfo = new XkcdDbInfo(timestamp, favorite == 1);
+                cursor.close();
+            } else {
+                dbInfo = null;
             }
             return dbInfo;
         } else {
@@ -54,7 +57,7 @@ public class XkcdDbDao {
 
     public static void updateComic(XkcdComic comic) {
         if (db != null) {
-            String whereClause = String.format("%d = %d", XkcdDbContract.ComicEntry._ID,
+            String whereClause = String.format("%s = %s", XkcdDbContract.ComicEntry._ID,
                     comic.getNum());
             String query = String.format("SELECT * FROM %s WHERE %s",
                     XkcdDbContract.ComicEntry.TABLE_NAME, whereClause);
@@ -75,7 +78,7 @@ public class XkcdDbDao {
 
     public static void deleteComic (int id) {
         if (db != null) {
-            String whereClause = String.format("%d = %d", XkcdDbContract.ComicEntry._ID,
+            String whereClause = String.format("%s = %s", XkcdDbContract.ComicEntry._ID,
                     id);
             String query = String.format("SELECT * FROM %s WHERE %s",
                     XkcdDbContract.ComicEntry.TABLE_NAME, whereClause);
@@ -87,5 +90,5 @@ public class XkcdDbDao {
         }
     }
 
-    
+
 }
