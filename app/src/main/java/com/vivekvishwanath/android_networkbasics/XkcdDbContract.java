@@ -15,6 +15,6 @@ public class XkcdDbContract {
                 + COLUMN_NAME_FAVORITE + " INTEGER);";
 
         public static final String SQL_DELETE_TABLE = "DROP TABLE IF EXISTS "
-                + TABLE_NAME + ";"; 
+                + TABLE_NAME + ";";
     }
 }
