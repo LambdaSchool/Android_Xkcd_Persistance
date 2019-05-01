@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class XkcdDbHelper extends SQLiteOpenHelper {
 	
 	private static final int    DATABASE_VERSION = 2;
-	private static final String DATABASE_NAME    = "SwApiDatabase.db";
+	private static final String DATABASE_NAME    = "XkcdComic.db";
 	
 	public XkcdDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,7 +29,6 @@ public class XkcdDbHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(XkcdDbContract.ComicEntry.SQL_CREATE_TABLE);
-		populateStarterData(db);
 	}
 	
 	@Override
@@ -43,14 +42,4 @@ public class XkcdDbHelper extends SQLiteOpenHelper {
 		onUpgrade(db, oldVersion, newVersion);
 	}
 	
-	private void populateStarterData(SQLiteDatabase db) {
-		
-		db.execSQL(String.format("INSERT INTO %s (%s, %s, %s)" +
-						"VALUES (2, \"Alderaan\", 1);",
-				XkcdDbContract.ComicEntry.TABLE_NAME,
-				XkcdDbContract.ComicEntry._ID,
-				XkcdDbContract.ComicEntry.COLUMN_NAME_TIME_STAMP,
-				XkcdDbContract.ComicEntry.COLUMN_NAME_IS_READ));
-
-	}
 }
