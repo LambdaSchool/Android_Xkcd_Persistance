@@ -76,6 +76,7 @@ public class XkcdComic {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        this.xkcdDbInfo = new XkcdDbInfo();
     }
 
     public String getNews() {

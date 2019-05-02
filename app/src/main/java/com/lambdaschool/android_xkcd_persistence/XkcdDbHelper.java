@@ -80,6 +80,7 @@ public class XkcdDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(XkcdDbContract.ComicEntry.SQL_CREATE_TABLE);
+        starterDataForTesting(db);
     }
 
     /**
@@ -105,7 +106,7 @@ public class XkcdDbHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(XkcdDbContract.ComicEntry.SQL_DELETE_TABLE);
-        //onCreate(db);
+        onCreate(db);
     }
 
     /**
@@ -127,5 +128,14 @@ public class XkcdDbHelper extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    private void starterDataForTesting(SQLiteDatabase db) {
+        db.execSQL("INSERT INTO comic (_id, timestamp, favorite) VALUES (321, 512019, 1);");
+        db.execSQL("INSERT INTO comic (_id, timestamp, favorite) VALUES (111, 4302019, 0);");
+        db.execSQL("INSERT INTO comic (_id, timestamp, favorite) VALUES (10, 512019, 1);");
+        db.execSQL("INSERT INTO comic (_id, timestamp, favorite) VALUES (55, 6071986, 0);");
+        db.execSQL("INSERT INTO comic (_id, timestamp, favorite) VALUES (32955, 501019, 1);");
+        db.execSQL("INSERT INTO comic (_id, timestamp, favorite) VALUES (3221, 1232017, 0);");
     }
 }
