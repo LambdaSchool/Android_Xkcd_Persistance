@@ -20,6 +20,16 @@ public class XkcdDao {
                 JSONObject xkcdJSON = new JSONObject(NetworkAdapter.httpRequest(urlString));
                 comic = new XkcdComic(xkcdJSON);
                 comic.setImage(NetworkAdapter.httpImageRequest(comic.getImg()));
+                XkcdDbInfo dbInfo = XkcdDbDao.readComic(comic.getNum());
+                if (dbInfo == null) {
+                    dbInfo = new XkcdDbInfo();
+                    comic.setDbInfo(dbInfo);
+                    XkcdDbDao.createComic(comic);
+                } else {
+                    dbInfo.updateTimestamp();
+                    comic.setDbInfo(dbInfo);
+                    XkcdDbDao.updateComic(comic);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
                 return null;
@@ -52,6 +62,16 @@ public class XkcdDao {
         int randomNum = (int) (Math.random() * maxComicNumber + 1);
         String randomUrl = String.format(SPECIFIC_COMIC_URL, randomNum);
         return getComic(randomUrl);
+    }
+
+    public static void setFavorite(XkcdComic comic, boolean favorite) {
+        XkcdDbInfo dbInfo = comic.getDbInfo();
+        if (favorite) {
+            dbInfo.setFavorite(true);
+        } else {
+            comic.getDbInfo().setFavorite(false);
+        }
+        XkcdDbDao.updateComic(comic);
     }
 
 }

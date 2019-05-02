@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationItemView nextButton;
     private BottomNavigationItemView previousButton;
     private XkcdComic comic;
+    private CheckBox favoriteCheckBox;
     Context context;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -80,23 +83,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                XkcdComic testComic = XkcdDao.getRecentComic();
 
-                XkcdDbDao.initializeInstance(context);
-
-                XkcdDbInfo comicInfo = XkcdDbDao.readComic(testComic.getNum());
-                int i = 0;
-
-            }
-        }).start();
+        XkcdDbDao.initializeInstance(context);
 
         comicImage = findViewById(R.id.comic_image);
         comicText = findViewById(R.id.comic_text);
         nextButton = findViewById(R.id.next_button);
         previousButton = findViewById(R.id.previous_button);
+        favoriteCheckBox = findViewById(R.id.favorite_check_box);
+
+        favoriteCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                XkcdDao.setFavorite(comic, isChecked);
+            }
+        });
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         }
         comicImage.setImageBitmap(comic.getImage());
         comicText.setText(comic.getAlt());
+        favoriteCheckBox.setChecked(comic.getDbInfo().isFavorite());
     }
 
 }

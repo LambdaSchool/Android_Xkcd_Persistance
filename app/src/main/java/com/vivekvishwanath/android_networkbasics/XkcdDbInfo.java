@@ -19,8 +19,8 @@ public class XkcdDbInfo {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public void updateTimestamp() {
+        this.timestamp = System.currentTimeMillis();
     }
 
     public boolean isFavorite() {
