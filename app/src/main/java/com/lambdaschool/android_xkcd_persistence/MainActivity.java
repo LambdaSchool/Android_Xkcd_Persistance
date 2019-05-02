@@ -55,12 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
         XkcdSqlDao.initializeInstance(this);
         XkcdSqlDao.createComic(comicForTesting);
-        comicForTesting.setNum("3333333");
+        //comicForTesting.setNum("3333333");
         comicForTesting.getXkcdDbInfo().setFavorite(1);
         comicForTesting.getXkcdDbInfo().setTimestamp(425457638);
         XkcdSqlDao.updateComic(comicForTesting);
         XkcdDbInfo xkcdDbInfo = XkcdSqlDao.readComic(Integer.parseInt(comicForTesting.getNum()));
-        XkcdSqlDao.closeInstance();
+        //XkcdSqlDao.closeInstance();
         XkcdSqlDao.deleteComic(Integer.parseInt(comicForTesting.getNum()));
 
 

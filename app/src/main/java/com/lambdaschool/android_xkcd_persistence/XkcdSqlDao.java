@@ -48,17 +48,17 @@ public class XkcdSqlDao {
     }
 
     public static void updateComic(@NotNull XkcdComic xkcdComic) {
-        String queryString = "UPDATE " + XkcdDbContract.ComicEntry.TABLE_NAME + " SET " + XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP + " = " + xkcdComic.getXkcdDbInfo().getTimestamp() + ", " + XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE + " = " + xkcdComic.getXkcdDbInfo().isFavorite()+" WHERE " + XkcdDbContract.ComicEntry._ID + " = " + xkcdComic.getNum() + ";";
-        String whereString = XkcdDbContract.ComicEntry._ID + "=?";
+        String queryString = "UPDATE " + XkcdDbContract.ComicEntry.TABLE_NAME + " SET " + XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP + " = " + xkcdComic.getXkcdDbInfo().getTimestamp() + ", " + XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE + " = " + xkcdComic.getXkcdDbInfo().isFavorite() + " WHERE " + XkcdDbContract.ComicEntry._ID + " = " + xkcdComic.getNum() + ";";
+        String whereString = XkcdDbContract.ComicEntry._ID + " = " + xkcdComic.getNum() + ";";
 
         //Cursor cursor = sqLiteDatabase.rawQuery(queryString, null);
         //if (cursor.getCount() > 0) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(XkcdDbContract.ComicEntry._ID, Integer.parseInt(xkcdComic.getNum()));
-            contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP, xkcdComic.getXkcdDbInfo().getTimestamp());
-            contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, xkcdComic.getXkcdDbInfo().isFavorite());
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(XkcdDbContract.ComicEntry._ID, Integer.parseInt(xkcdComic.getNum()));
+        contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP, xkcdComic.getXkcdDbInfo().getTimestamp());
+        contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, xkcdComic.getXkcdDbInfo().isFavorite());
 
-            int success = sqLiteDatabase.update(XkcdDbContract.ComicEntry.TABLE_NAME, contentValues, XkcdDbContract.ComicEntry._ID + "=?", new String[]{xkcdComic.getNum()});
+        int success = sqLiteDatabase.update(XkcdDbContract.ComicEntry.TABLE_NAME, contentValues, whereString, null);
         //}
         //cursor.close();
     }
