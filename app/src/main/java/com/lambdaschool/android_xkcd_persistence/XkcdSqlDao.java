@@ -4,11 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
 public class XkcdSqlDao {
     private static SQLiteDatabase sqLiteDatabase;
+    private static final String TAG = "XkcdSqlDao";
 
     public static void initializeInstance(Context context) {
         if (sqLiteDatabase == null) {
@@ -27,7 +29,11 @@ public class XkcdSqlDao {
         contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP, xkcdComic.getXkcdDbInfo().getTimestamp());
         contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, xkcdComic.getXkcdDbInfo().isFavorite());
 
-        long newId = sqLiteDatabase.insert(XkcdDbContract.ComicEntry.TABLE_NAME, null, contentValues);
+        long rowInserted = sqLiteDatabase.insert(XkcdDbContract.ComicEntry.TABLE_NAME, null, contentValues);
+
+        if (rowInserted == -1) {
+            Log.e(TAG, "Problem CREATING a comic.");
+        }
     }
 
     public static XkcdDbInfo readComic(int xkcdId) {
@@ -41,6 +47,9 @@ public class XkcdSqlDao {
             xkcdDbInfo.setTimestamp(cursor.getLong(index));
             index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE);
             xkcdDbInfo.setFavorite(cursor.getInt(index));
+        } else {
+            Log.e(TAG, String.format("Cannot READ comic #%d", xkcdId));
+            xkcdDbInfo = null;
         }
         cursor.close();
 
@@ -58,12 +67,20 @@ public class XkcdSqlDao {
         contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP, xkcdComic.getXkcdDbInfo().getTimestamp());
         contentValues.put(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, xkcdComic.getXkcdDbInfo().isFavorite());
 
-        int success = sqLiteDatabase.update(XkcdDbContract.ComicEntry.TABLE_NAME, contentValues, whereString, null);
+        int rowsAffected = sqLiteDatabase.update(XkcdDbContract.ComicEntry.TABLE_NAME, contentValues, whereString, null);
+
+        if (rowsAffected < 1) {
+            Log.e(TAG, "Error UPDATING the comic.");
+        }
         //}
         //cursor.close();
     }
 
     public static void deleteComic(int xkcdId) {
-        int success = sqLiteDatabase.delete(XkcdDbContract.ComicEntry.TABLE_NAME, XkcdDbContract.ComicEntry._ID + " = ?;", new String[]{String.valueOf(xkcdId)});
+        int rowsAffected = sqLiteDatabase.delete(XkcdDbContract.ComicEntry.TABLE_NAME, XkcdDbContract.ComicEntry._ID + " = ?;", new String[]{String.valueOf(xkcdId)});
+
+        if (rowsAffected < 1) {
+            Log.e(TAG, String.format("Comic #%d couldn't be DELETED.", xkcdId));
+        }
     }
 }

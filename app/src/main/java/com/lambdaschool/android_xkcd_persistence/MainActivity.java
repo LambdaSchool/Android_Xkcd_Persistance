@@ -18,13 +18,18 @@ public class MainActivity extends AppCompatActivity {
     private String maxNum;
     private String currentNum;
 
-    private XkcdComic comicForTesting;
+    //private XkcdComic comicForTesting;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        XkcdSqlDao.closeInstance();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         textViewHeading = findViewById(R.id.text_view_heading);
         textViewStats = findViewById(R.id.text_view_stats);
@@ -32,11 +37,13 @@ public class MainActivity extends AppCompatActivity {
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        XkcdSqlDao.initializeInstance(this);
+
         (new Thread(new Runnable() {
             @Override
             public void run() {
                 final XkcdComic xkcdComic = XkcdDao.getRecentComic();
-                comicForTesting = xkcdComic;
+                //comicForTesting = xkcdComic;
                 maxNum = xkcdComic.getNum();
                 runOnUiThread(new Runnable() {
                     @Override
@@ -46,24 +53,19 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         })).start();
-
+        /*
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        XkcdSqlDao.initializeInstance(this);
         XkcdSqlDao.createComic(comicForTesting);
         //comicForTesting.setNum("3333333");
         comicForTesting.getXkcdDbInfo().setFavorite(1);
-        comicForTesting.getXkcdDbInfo().setTimestamp(425457638);
+        comicForTesting.getXkcdDbInfo().setTimestamp(789789789);
         XkcdSqlDao.updateComic(comicForTesting);
         XkcdDbInfo xkcdDbInfo = XkcdSqlDao.readComic(Integer.parseInt(comicForTesting.getNum()));
-        //XkcdSqlDao.closeInstance();
-        XkcdSqlDao.deleteComic(Integer.parseInt(comicForTesting.getNum()));
-
-
+        XkcdSqlDao.deleteComic(Integer.parseInt(comicForTesting.getNum()));*/
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {

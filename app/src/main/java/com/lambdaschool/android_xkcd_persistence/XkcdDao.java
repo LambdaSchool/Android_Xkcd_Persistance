@@ -23,6 +23,18 @@ public class XkcdDao {
             xkcdComic = new XkcdComic(json);
             Bitmap bitmap = NetworkAdapter.httpImageRequest(xkcdComic.getImg());
             xkcdComic.setBitmap(bitmap);
+
+            XkcdDbInfo xkcdDbInfo = XkcdSqlDao.readComic(Integer.parseInt(xkcdComic.getNum()));
+
+            if (xkcdDbInfo == null) {
+                xkcdDbInfo = new XkcdDbInfo();
+                xkcdComic.setXkcdDbInfo(xkcdDbInfo);
+                XkcdSqlDao.createComic(xkcdComic);
+
+                xkcdComic.getXkcdDbInfo().setTimestamp(System.currentTimeMillis());
+                XkcdSqlDao.updateComic(xkcdComic);
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

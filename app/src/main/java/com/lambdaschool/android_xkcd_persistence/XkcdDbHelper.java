@@ -80,7 +80,7 @@ public class XkcdDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(XkcdDbContract.ComicEntry.SQL_CREATE_TABLE);
-        starterDataForTesting(db);
+        //starterDataForTesting(db);
     }
 
     /**
