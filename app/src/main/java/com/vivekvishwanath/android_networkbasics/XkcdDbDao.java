@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+
 public class XkcdDbDao {
     private static SQLiteDatabase db;
 
@@ -88,6 +90,22 @@ public class XkcdDbDao {
             }
             cursor.close();
         }
+    }
+
+    public static ArrayList<Integer> readFavorites() {
+        ArrayList<Integer> comicIds = new ArrayList<>();
+        if (db != null) {
+            String query = String.format("SELECT * FROM %s WHERE %s = %s",
+                    XkcdDbContract.ComicEntry.TABLE_NAME, XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE, 1);
+            Cursor cursor = db.rawQuery(query, null);
+            int index;
+            while (cursor.moveToNext()) {
+                index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry._ID);
+                comicIds.add(cursor.getInt(index));
+            }
+            cursor.close();
+        }
+        return comicIds;
     }
 
 

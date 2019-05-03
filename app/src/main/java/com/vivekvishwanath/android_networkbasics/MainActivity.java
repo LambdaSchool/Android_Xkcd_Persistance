@@ -10,12 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FavoritesFragment.OnListFragmentInteractionListener {
 
     private ImageView comicImage;
     private TextView comicText;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationItemView previousButton;
     private XkcdComic comic;
     private CheckBox favoriteCheckBox;
+    Button favoritesButton;
     Context context;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -91,6 +93,16 @@ public class MainActivity extends AppCompatActivity {
         nextButton = findViewById(R.id.next_button);
         previousButton = findViewById(R.id.previous_button);
         favoriteCheckBox = findViewById(R.id.favorite_check_box);
+        favoritesButton = findViewById(R.id.favorites_button);
+        favoritesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FavoritesFragment fragment = new FavoritesFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.list_fragment_container, fragment)
+                        .commit();
+            }
+        });
 
         favoriteCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -130,4 +142,8 @@ public class MainActivity extends AppCompatActivity {
         favoriteCheckBox.setChecked(comic.getDbInfo().isFavorite());
     }
 
+    @Override
+    public void onListFragmentInteraction(XkcdComic comic) {
+
+    }
 }

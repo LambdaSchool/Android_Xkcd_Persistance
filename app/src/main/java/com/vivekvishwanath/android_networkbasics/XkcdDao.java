@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 public class XkcdDao {
 
@@ -35,6 +36,11 @@ public class XkcdDao {
                 return null;
             }
         }
+        return comic;
+    }
+
+    public static XkcdComic getSpecificComic(int id) {
+        XkcdComic comic = getComic(String.format(SPECIFIC_COMIC_URL, id));
         return comic;
     }
 
@@ -72,6 +78,10 @@ public class XkcdDao {
             comic.getDbInfo().setFavorite(false);
         }
         XkcdDbDao.updateComic(comic);
+    }
+
+    public static ArrayList<Integer> getFavorites() {
+        return XkcdDbDao.readFavorites();
     }
 
 }
