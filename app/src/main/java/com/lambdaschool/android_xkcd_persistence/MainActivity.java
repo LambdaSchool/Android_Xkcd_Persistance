@@ -1,13 +1,19 @@
 package com.lambdaschool.android_xkcd_persistence;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,15 +21,18 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewHeading;
     private TextView textViewStats;
     private ImageView imageViewComic;
+    private ToggleButton toggleButton;
+    private Button button;
     private String maxNum;
     private String currentNum;
+    private XkcdComic currentXkcdComic;
 
     //private XkcdComic comicForTesting;
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        XkcdSqlDao.closeInstance();
+        //XkcdSqlDao.closeInstance();
     }
 
     @Override
@@ -31,9 +40,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Context context = this;
+
         textViewHeading = findViewById(R.id.text_view_heading);
         textViewStats = findViewById(R.id.text_view_stats);
         imageViewComic = findViewById(R.id.image_view_comic);
+        toggleButton = findViewById(R.id.toggle_button);
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (currentXkcdComic != null) {
+                    if (isChecked) {
+                        currentXkcdComic.getXkcdDbInfo().setFavorite(1);
+                    } else {
+                        currentXkcdComic.getXkcdDbInfo().setFavorite(0);
+                    }
+                    XkcdDao.setFavorite(currentXkcdComic);
+                }
+            }
+        });
+        button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, UserSelectionsActivity.class));
+            }
+        });
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -114,6 +146,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUI(XkcdComic xkcdComic) {
+        currentXkcdComic = xkcdComic;
+        currentNum = xkcdComic.getNum();
+        toggleButton.setChecked(xkcdComic.getXkcdDbInfo().isFavorite() == 1);
         textViewStats.setText(xkcdComic.toString());
         imageViewComic.setImageBitmap(xkcdComic.getBitmap());
 
@@ -130,6 +165,5 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        currentNum = xkcdComic.getNum();
     }
 }

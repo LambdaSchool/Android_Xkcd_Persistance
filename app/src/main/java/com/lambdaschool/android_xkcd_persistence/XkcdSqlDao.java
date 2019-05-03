@@ -8,6 +8,8 @@ import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 public class XkcdSqlDao {
     private static SQLiteDatabase sqLiteDatabase;
     private static final String TAG = "XkcdSqlDao";
@@ -48,7 +50,7 @@ public class XkcdSqlDao {
             index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE);
             xkcdDbInfo.setFavorite(cursor.getInt(index));
         } else {
-            Log.e(TAG, String.format("Cannot READ comic #%d", xkcdId));
+            Log.e(TAG, String.format("Cannot READ comic #%d.", xkcdId));
             xkcdDbInfo = null;
         }
         cursor.close();
@@ -82,5 +84,30 @@ public class XkcdSqlDao {
         if (rowsAffected < 1) {
             Log.e(TAG, String.format("Comic #%d couldn't be DELETED.", xkcdId));
         }
+    }
+
+    public static ArrayList<XkcdDbInfo> readFavoriteComics() {
+        String queryString = "SELECT * FROM " + XkcdDbContract.ComicEntry.TABLE_NAME + " WHERE " + XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE + " = 1;";
+        ArrayList<XkcdDbInfo> xkcdDbInfoArrayList=new ArrayList<>();
+
+        Cursor cursor = sqLiteDatabase.rawQuery(queryString, null);
+
+        while (cursor.moveToNext() && cursor.getCount() > 0) {
+            XkcdDbInfo xkcdDbInfo = new XkcdDbInfo();
+            int index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_TIMESTAMP);
+            xkcdDbInfo.setTimestamp(cursor.getLong(index));
+            index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry.COLUMN_NAME_FAVORITE);
+            xkcdDbInfo.setFavorite(cursor.getInt(index));
+            index = cursor.getColumnIndexOrThrow(XkcdDbContract.ComicEntry._ID);
+            xkcdDbInfo.setFavoriteId(cursor.getInt(index));
+
+            xkcdDbInfoArrayList.add(xkcdDbInfo);
+        }
+/*        if (cursor.) {
+            Log.e(TAG, "Cannot read any FAVORITES.");
+        }*/
+        cursor.close();
+
+        return xkcdDbInfoArrayList;
     }
 }

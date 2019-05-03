@@ -5,9 +5,8 @@ import android.graphics.Bitmap;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Locale;
-
-import static java.lang.Math.random;
 
 public class XkcdDao {
     private static final String URL_BASE = "https://xkcd.com/";
@@ -34,6 +33,8 @@ public class XkcdDao {
                 xkcdComic.getXkcdDbInfo().setTimestamp(System.currentTimeMillis());
                 XkcdSqlDao.updateComic(xkcdComic);
             }
+
+            xkcdComic.setXkcdDbInfo(xkcdDbInfo);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -68,5 +69,13 @@ public class XkcdDao {
 
     public static XkcdComic getSpecificComic(String comicNum) {
         return getComic(URL_BASE + comicNum + "/" + URL_ENDING);
+    }
+
+    public static void setFavorite(XkcdComic xkcdComic) {
+        XkcdSqlDao.updateComic(xkcdComic);
+    }
+
+    public static ArrayList<XkcdDbInfo> getFavorites() {
+        return XkcdSqlDao.readFavoriteComics();
     }
 }

@@ -9,6 +9,32 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ToggleButton
+        android:id="@+id/toggle_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Favorite"
+        android:textAllCaps="false"
+        android:textColor="#FF7070"
+        android:textOff="Set Favorite"
+        android:textOn="Favorited !!!!"
+        app:layout_constraintStart_toStartOf="@+id/text_view_heading"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="User Page"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/text_view_heading"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/text_view_heading"
         android:layout_width="match_parent"
@@ -32,7 +58,8 @@
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_heading" />
+        app:layout_constraintTop_toBottomOf="@id/toggle_button"
+        tools:layout_editor_absoluteY="46dp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -41,11 +68,11 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_stats"
-        android:orientation="vertical">
+        app:layout_constraintTop_toBottomOf="@+id/text_view_stats">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,10 +81,15 @@
 
             <ImageView
                 android:id="@+id/image_view_comic"
-                android:layout_width="match_parent"
-                android:layout_height="473dp"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center_horizontal"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
                 tools:srcCompat="@tools:sample/avatars[2]" />
+
         </LinearLayout>
+
     </ScrollView>
 
     <android.support.design.widget.BottomNavigationView

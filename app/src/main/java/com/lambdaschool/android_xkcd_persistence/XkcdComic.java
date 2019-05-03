@@ -79,6 +79,11 @@ public class XkcdComic {
         this.xkcdDbInfo = new XkcdDbInfo();
     }
 
+    public XkcdComic(XkcdDbInfo xkcdDbInfo) {
+        this.num = String.valueOf(xkcdDbInfo.getFavoriteId());
+        this.xkcdDbInfo = xkcdDbInfo;
+    }
+
     public String getNews() {
         return news;
     }
